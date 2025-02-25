@@ -145,6 +145,11 @@ public class ConfigServletInner {
     
     /**
      * Execute to get config [API V1] or [API V2].
+     * 1.获取读锁，获取不到就自旋重复获取10次
+     * 2.根据beta、tag、autoTag来判断读什么配置
+     * 3.PropertyUtil.isDirectRead()判断是读mysql还是读文件
+     * 4.使用jdk的零拷贝传输直接将文件输入流转response输出流
+     * 5.释放读锁
      */
     public String doGetConfig(HttpServletRequest request, HttpServletResponse response, String dataId, String group,
             String tenant, String tag, String isNotify, String clientIp, boolean isV2)
